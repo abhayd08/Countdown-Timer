@@ -11,11 +11,6 @@ import { useContext, useState } from "react";
 import TimerContext from "../Contexts/TimerContext";
 
 const Timer = () => {
-  const [days, setDays] = useState(0);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [hoursRemaining, setHoursRemaining] = useState(0);
   const [minutesRemaining, setMinutesRemaining] = useState(0);
@@ -30,28 +25,75 @@ const Timer = () => {
 
   React.useEffect(() => {
     if (isTimerStarted) {
-      setDays(Math.floor(timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24)));
-      setHours(
+      setDaysRemaining(
+        Math.floor(timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24))
+      );
+      setHoursRemaining(
         Math.floor(
           (timeDifferenceInMilliseconds % (1000 * 60 * 60 * 24)) /
             (1000 * 60 * 60)
         )
       );
-      setMinutes(
+      setMinutesRemaining(
         Math.floor(
           (timeDifferenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
         )
       );
-      setSeconds(
+      setSecondsRemaining(
         Math.floor((timeDifferenceInMilliseconds % (1000 * 60)) / 1000)
       );
     }
   }, [isTimerStarted]);
 
-  const progressDaysValue = (daysRemaining / days) * 100;
-  const progressHoursValue = (hoursRemaining / hours) * 100;
-  const progressMinutesValue = (minutesRemaining / minutes) * 100;
-  const progressSecondsValue = (secondsRemaining / seconds) * 100;
+  React.useEffect(() => {
+    if (isTimerStarted) {
+      const timerInterval = setInterval(() => {
+        if (secondsRemaining > 0) {
+          setSecondsRemaining((prevSeconds) => prevSeconds - 1);
+        } else {
+          if (minutesRemaining > 0) {
+            setMinutesRemaining((prevMinutes) => prevMinutes - 1);
+            setSecondsRemaining(59);
+          } else {
+            if (hoursRemaining > 0) {
+              setHoursRemaining((prevHours) => prevHours - 1);
+              setSecondsRemaining(59);
+              setMinutesRemaining(59);
+            } else {
+              if (daysRemaining > 0) {
+                setDaysRemaining((prevDays) => prevDays - 1);
+                setHoursRemaining(23);
+                setSecondsRemaining(59);
+                setMinutesRemaining(59);
+              } else {
+                clearInterval(timerInterval);
+                alert("Done");
+              }
+            }
+          }
+        }
+      }, 1000);
+
+      return () => clearInterval(timerInterval);
+    }
+  }, [
+    isTimerStarted,
+    secondsRemaining,
+    minutesRemaining,
+    hoursRemaining,
+    daysRemaining,
+  ]);
+
+  const daysInMonth = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth() + 1,
+    0
+  ).getDate();
+
+  const progressDaysValue = (daysRemaining / daysInMonth) * 100;
+  const progressHoursValue = (hoursRemaining / 24) * 100;
+  const progressMinutesValue = (minutesRemaining / 60) * 100;
+  const progressSecondsValue = (secondsRemaining / 60) * 100;
 
   return (
     <>
@@ -70,7 +112,7 @@ const Timer = () => {
                 showValueLabel={false}
               />
               <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {days}
+                {daysRemaining}
               </h6>
             </div>
           </CardBody>
@@ -101,7 +143,7 @@ const Timer = () => {
                 showValueLabel={false}
               />
               <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {hours}
+                {hoursRemaining}
               </h6>
             </div>
           </CardBody>
@@ -132,7 +174,7 @@ const Timer = () => {
                 showValueLabel={false}
               />
               <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {minutes}
+                {minutesRemaining}
               </h6>
             </div>
           </CardBody>
@@ -163,7 +205,7 @@ const Timer = () => {
                 showValueLabel={false}
               />
               <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {seconds}
+                {secondsRemaining}
               </h6>
             </div>
           </CardBody>
