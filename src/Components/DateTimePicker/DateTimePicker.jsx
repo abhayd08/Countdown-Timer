@@ -1,15 +1,32 @@
 import styles from "./DateTimePicker.module.css";
 import { Input } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
+import { useContext } from "react";
+import TimerContext from "../Contexts/TimerContext";
 
 const DateTimePicker = () => {
+  const {
+    isTimerStarted,
+    setIsTimerStarted,
+    targetDateTime,
+    setTargetDateTime,
+    setTimeDifferenceInMilliseconds
+  } = useContext(TimerContext);
+
+  const handleTimerStart = (e) => {
+    e.preventDefault();
+    setIsTimerStarted(!isTimerStarted);
+    setTimeDifferenceInMilliseconds(new Date(targetDateTime) - Date.now());
+  };
+
   return (
     <form
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={handleTimerStart}
       className={`text-xl flex justify-center items-center flex-wrap gap-2 ${styles.form}`}
     >
       <div className="relative">
         <input
+          onChange={(e) => setTargetDateTime(e.target.value)}
           required
           id="datetime-picker"
           type="datetime-local"
