@@ -30,8 +30,8 @@ A web application that allows users to input a specific date and time, after whi
 #### 1. Clone the Repository:
 
 ```bash
-  git clone
-  cd <project-folder>
+  git clone https://github.com/abhayd08/Countdown-Timer.git
+  cd Countdown-Timer
 ```
 
 #### 2. Install Dependencies:
