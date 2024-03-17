@@ -4,11 +4,11 @@ import styles from "./Home.module.css";
 const Home = () => {
   return (
     <>
-      <div className="py-8 min-h-[100vh] bg-gradient-to-b from-[#f31260] to-[white]">
+      <div className="py-8 px-2 min-h-[100vh] bg-gradient-to-b from-[#f31260] to-[white]">
         <nav
-          className={`flex justify-center items-center gap-4 mb-24 ${styles.navHeading}`}
+          className={`flex justify-center flex-wrap items-center gap-x-4 gap-y-2 mb-24 ${styles.navHeading}`}
         >
-          <h1 className="text-5xl text-center tracking-wide text-white font-bold">
+          <h1 className="text-5xl leading-[3.75rem] text-center tracking-wide text-white font-bold">
             Countdown <span className="text-[yellow] text-[3.5rem]">Timer</span>
           </h1>
           <lord-icon
@@ -16,7 +16,7 @@ const Home = () => {
             trigger="loop"
             state="loop-oscillate"
             colors="primary:black,secondary:white,tertiary:black,quaternary:#f31260"
-            style={{ width: "150px", height: "150px" }}
+            style={{ width: "140px", height: "140px" }}
           ></lord-icon>
         </nav>
         <DateTimePicker />
