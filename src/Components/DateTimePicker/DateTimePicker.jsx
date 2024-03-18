@@ -42,7 +42,7 @@ const DateTimePicker = () => {
       {!isTimerStarted ? (
         <Button
           type="submit"
-          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-40 font-semibold"
+          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-36 font-semibold"
           color="danger"
           onClick={() => {
             setIsTimerStarted(true);
@@ -61,7 +61,7 @@ const DateTimePicker = () => {
             setIsTimerCancelled(true);
             setIsTimerStarted(false);
           }}
-          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-40 font-semibold"
+          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-36 font-semibold"
           color="danger"
         >
           Cancel Timer

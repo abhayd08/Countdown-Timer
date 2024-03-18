@@ -3,6 +3,7 @@ import Timer from "../Timer/Timer";
 import styles from "./Home.module.css";
 import TimerContext from "../Contexts/TimerContext";
 import { useState } from "react";
+import 'animate.css';
 
 const Home = () => {
   const [isTimerStarted, setIsTimerStarted] = useState(false);

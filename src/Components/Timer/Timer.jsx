@@ -9,6 +9,8 @@ import {
 import React from "react";
 import { useContext, useState } from "react";
 import TimerContext from "../Contexts/TimerContext";
+import { ToastContainer, toast, cssTransition } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Timer = () => {
   const {
@@ -28,16 +30,66 @@ const Timer = () => {
     setSecondsRemaining,
   } = useContext(TimerContext);
 
+  const [totalDays, setTotalDays] = useState(null);
+
+  const bounce = cssTransition({
+    enter: "animate__animated animate__bounceIn",
+    exit: "animate__animated animate__bounceOut",
+  });
+
+  const successTransition = cssTransition({
+    enter: "animate__animated animate__jackInTheBox",
+    exit: "animate__animated animate__rollOut",
+  });
+
+  const notifyInvalidDateInput = () => {
+    toast.error(
+      "Please choose a date and time ahead of the current date and time.",
+      {
+        position: "top-right",
+        transition: bounce,
+      }
+    );
+  };
+
+  const notifyError = (element) => {
+    let message;
+    if (element === "days") {
+      message = "The maximum days for the countdown timer should be 99 days.";
+    } else if (element === "hours") {
+      message = "The maximum hours for the countdown timer should be 23 hours.";
+    } else if (element === "minutes") {
+      message =
+        "The maximum minutes for the countdown timer should be 59 minutes.";
+    } else if (element === "seconds") {
+      message =
+        "The maximum seconds for the countdown timer should be 59 seconds.";
+    }
+
+    toast.info(message, {
+      position: "top-right",
+      transition: bounce,
+    });
+  };
+
+  const notifySuccess = () => {
+    toast.success("The countdown is over. What's next on your adventure?"),
+      {
+        position: "top-center",
+        transition: successTransition,
+      };
+  };
+
   React.useEffect(() => {
     if (isTimerStarted) {
       const daysLeft = Math.floor(
         timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24)
       );
       if (daysLeft > 99) {
-        alert("Hi");
+        notifyError("days");
         setIsTimerStarted(false);
       } else if (daysLeft < 0) {
-        alert("Days should not  be less than 0");
+        notifyInvalidDateInput();
         setIsTimerStarted(false);
       } else {
         const hoursLeft = Math.floor(
@@ -45,32 +97,33 @@ const Timer = () => {
             (1000 * 60 * 60)
         );
         if (hoursLeft > 23) {
-          alert("Hi-2");
+          notifyError("hours");
           setIsTimerStarted(false);
         } else if (hoursLeft < 0) {
-          alert("Hours should not  be less than 0");
+          notifyInvalidDateInput();
           setIsTimerStarted(false);
         } else {
           const minutesLeft = Math.floor(
             (timeDifferenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
           );
           if (minutesLeft > 59) {
-            alert("Hi-3");
+            notifyError("minutes");
             setIsTimerStarted(false);
           } else if (minutesLeft < 0) {
-            alert("Minutes should not  be less than 0");
+            notifyInvalidDateInput();
             setIsTimerStarted(false);
           } else {
             const secondsLeft = Math.floor(
               (timeDifferenceInMilliseconds % (1000 * 60)) / 1000
             );
             if (secondsLeft > 59) {
-              alert("hi-4");
+              notifyError("seconds");
               setIsTimerStarted(false);
             } else if (secondsLeft < 0) {
-              alert("Seconds should not  be less than 0");
+              notifyInvalidDateInput();
               setIsTimerStarted(false);
             } else {
+              setTotalDays(daysLeft);
               setDaysRemaining(daysLeft);
               setHoursRemaining(hoursLeft);
               setMinutesRemaining(minutesLeft);
@@ -106,7 +159,7 @@ const Timer = () => {
               } else {
                 clearInterval(timerInterval);
                 setIsTimerStarted(false);
-                alert("Done");
+                notifySuccess();
               }
             }
           }
@@ -132,13 +185,7 @@ const Timer = () => {
     isTimerCancelled,
   ]);
 
-  const daysInMonth = new Date(
-    new Date().getFullYear(),
-    new Date().getMonth() + 1,
-    0
-  ).getDate();
-
-  const progressDaysValue = (daysRemaining / daysInMonth) * 100;
+  const progressDaysValue = (daysRemaining / totalDays) * 100;
   const progressHoursValue = (hoursRemaining / 24) * 100;
   const progressMinutesValue = (minutesRemaining / 60) * 100;
   const progressSecondsValue = (secondsRemaining / 60) * 100;
@@ -269,6 +316,17 @@ const Timer = () => {
             </Chip>
           </CardFooter>
         </Card>
+        <ToastContainer
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
       </div>
     </>
   );
