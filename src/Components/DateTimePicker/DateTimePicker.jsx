@@ -10,18 +10,21 @@ const DateTimePicker = () => {
     setIsTimerStarted,
     targetDateTime,
     setTargetDateTime,
-    setTimeDifferenceInMilliseconds
+    setTimeDifferenceInMilliseconds,
+    setIsTimerCancelled,
+    daysRemaining,
+    setDaysRemaining,
+    hoursRemaining,
+    setHoursRemaining,
+    minutesRemaining,
+    setMinutesRemaining,
+    secondsRemaining,
+    setSecondsRemaining,
   } = useContext(TimerContext);
-
-  const handleTimerStart = (e) => {
-    e.preventDefault();
-    setIsTimerStarted(!isTimerStarted);
-    setTimeDifferenceInMilliseconds(new Date(targetDateTime) - Date.now());
-  };
 
   return (
     <form
-      onSubmit={handleTimerStart}
+      onSubmit={(e) => e.preventDefault()}
       className={`text-xl flex justify-center items-center flex-wrap gap-2 ${styles.form}`}
     >
       <div className="relative">
@@ -36,13 +39,34 @@ const DateTimePicker = () => {
           Select date and time
         </h6>
       </div>
-      <Button
-        type="submit"
-        className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-28 font-semibold"
-        color="danger"
-      >
-        Start
-      </Button>
+      {!isTimerStarted ? (
+        <Button
+          type="submit"
+          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-40 font-semibold"
+          color="danger"
+          onClick={() => {
+            setIsTimerStarted(true);
+            setTimeDifferenceInMilliseconds(
+              new Date(targetDateTime) - Date.now()
+            );
+            setIsTimerCancelled(false);
+          }}
+        >
+          Start Timer
+        </Button>
+      ) : (
+        <Button
+          type="submit"
+          onClick={() => {
+            setIsTimerCancelled(true);
+            setIsTimerStarted(false);
+          }}
+          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-40 font-semibold"
+          color="danger"
+        >
+          Cancel Timer
+        </Button>
+      )}
     </form>
   );
 };

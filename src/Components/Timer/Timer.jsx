@@ -11,43 +11,81 @@ import { useContext, useState } from "react";
 import TimerContext from "../Contexts/TimerContext";
 
 const Timer = () => {
-  const [daysRemaining, setDaysRemaining] = useState(0);
-  const [hoursRemaining, setHoursRemaining] = useState(0);
-  const [minutesRemaining, setMinutesRemaining] = useState(0);
-  const [secondsRemaining, setSecondsRemaining] = useState(0);
-
   const {
     isTimerStarted,
     targetDateTime,
     setTargetDateTime,
     timeDifferenceInMilliseconds,
+    isTimerCancelled,
+    setIsTimerStarted,
+    daysRemaining,
+    setDaysRemaining,
+    hoursRemaining,
+    setHoursRemaining,
+    minutesRemaining,
+    setMinutesRemaining,
+    secondsRemaining,
+    setSecondsRemaining,
   } = useContext(TimerContext);
 
   React.useEffect(() => {
     if (isTimerStarted) {
-      setDaysRemaining(
-        Math.floor(timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24))
+      const daysLeft = Math.floor(
+        timeDifferenceInMilliseconds / (1000 * 60 * 60 * 24)
       );
-      setHoursRemaining(
-        Math.floor(
+      if (daysLeft > 99) {
+        alert("Hi");
+        setIsTimerStarted(false);
+      } else if (daysLeft < 0) {
+        alert("Days should not  be less than 0");
+        setIsTimerStarted(false);
+      } else {
+        const hoursLeft = Math.floor(
           (timeDifferenceInMilliseconds % (1000 * 60 * 60 * 24)) /
             (1000 * 60 * 60)
-        )
-      );
-      setMinutesRemaining(
-        Math.floor(
-          (timeDifferenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
-        )
-      );
-      setSecondsRemaining(
-        Math.floor((timeDifferenceInMilliseconds % (1000 * 60)) / 1000)
-      );
+        );
+        if (hoursLeft > 23) {
+          alert("Hi-2");
+          setIsTimerStarted(false);
+        } else if (hoursLeft < 0) {
+          alert("Hours should not  be less than 0");
+          setIsTimerStarted(false);
+        } else {
+          const minutesLeft = Math.floor(
+            (timeDifferenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          if (minutesLeft > 59) {
+            alert("Hi-3");
+            setIsTimerStarted(false);
+          } else if (minutesLeft < 0) {
+            alert("Minutes should not  be less than 0");
+            setIsTimerStarted(false);
+          } else {
+            const secondsLeft = Math.floor(
+              (timeDifferenceInMilliseconds % (1000 * 60)) / 1000
+            );
+            if (secondsLeft > 59) {
+              alert("hi-4");
+              setIsTimerStarted(false);
+            } else if (secondsLeft < 0) {
+              alert("Seconds should not  be less than 0");
+              setIsTimerStarted(false);
+            } else {
+              setDaysRemaining(daysLeft);
+              setHoursRemaining(hoursLeft);
+              setMinutesRemaining(minutesLeft);
+              setSecondsRemaining(secondsLeft);
+            }
+          }
+        }
+      }
     }
   }, [isTimerStarted]);
 
   React.useEffect(() => {
+    let timerInterval;
     if (isTimerStarted) {
-      const timerInterval = setInterval(() => {
+      timerInterval = setInterval(() => {
         if (secondsRemaining > 0) {
           setSecondsRemaining((prevSeconds) => prevSeconds - 1);
         } else {
@@ -67,6 +105,7 @@ const Timer = () => {
                 setMinutesRemaining(59);
               } else {
                 clearInterval(timerInterval);
+                setIsTimerStarted(false);
                 alert("Done");
               }
             }
@@ -76,12 +115,21 @@ const Timer = () => {
 
       return () => clearInterval(timerInterval);
     }
+
+    if (isTimerCancelled) {
+      clearInterval(timerInterval);
+      setDaysRemaining(0);
+      setHoursRemaining(0);
+      setMinutesRemaining(0);
+      setSecondsRemaining(0);
+    }
   }, [
     isTimerStarted,
     secondsRemaining,
     minutesRemaining,
     hoursRemaining,
     daysRemaining,
+    isTimerCancelled,
   ]);
 
   const daysInMonth = new Date(

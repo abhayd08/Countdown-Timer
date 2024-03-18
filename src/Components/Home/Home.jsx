@@ -7,7 +7,14 @@ import { useState } from "react";
 const Home = () => {
   const [isTimerStarted, setIsTimerStarted] = useState(false);
   const [targetDateTime, setTargetDateTime] = useState(null);
-  const [timeDifferenceInMilliseconds, setTimeDifferenceInMilliseconds] = useState(null);
+  const [timeDifferenceInMilliseconds, setTimeDifferenceInMilliseconds] =
+    useState(null);
+  const [isTimerCancelled, setIsTimerCancelled] = useState(null);
+
+  const [daysRemaining, setDaysRemaining] = useState(0);
+  const [hoursRemaining, setHoursRemaining] = useState(0);
+  const [minutesRemaining, setMinutesRemaining] = useState(0);
+  const [secondsRemaining, setSecondsRemaining] = useState(0);
 
   return (
     <>
@@ -19,7 +26,17 @@ const Home = () => {
             targetDateTime,
             setTargetDateTime,
             timeDifferenceInMilliseconds,
-            setTimeDifferenceInMilliseconds
+            setTimeDifferenceInMilliseconds,
+            isTimerCancelled,
+            setIsTimerCancelled,
+            daysRemaining,
+            setDaysRemaining,
+            hoursRemaining,
+            setHoursRemaining,
+            minutesRemaining,
+            setMinutesRemaining,
+            secondsRemaining,
+            setSecondsRemaining
           }}
         >
           <nav
