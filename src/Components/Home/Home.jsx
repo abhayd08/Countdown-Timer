@@ -18,6 +18,7 @@ const Home = () => {
   const [minutesRemaining, setMinutesRemaining] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const [timeWhenTimerStarted, setTimeWhenTimerStarted] = useState(null);
+  const [isTimerStartBtnClicked, setIsTimerStartBtnClicked] = useState(null);
 
   return (
     <>
@@ -42,6 +43,8 @@ const Home = () => {
             setSecondsRemaining,
             timeWhenTimerStarted,
             setTimeWhenTimerStarted,
+            isTimerStartBtnClicked,
+            setIsTimerStartBtnClicked,
           }}
         >
           <nav
