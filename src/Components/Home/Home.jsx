@@ -3,7 +3,8 @@ import Timer from "../Timer/Timer";
 import styles from "./Home.module.css";
 import TimerContext from "../Contexts/TimerContext";
 import { useState } from "react";
-import 'animate.css';
+import "animate.css";
+import { ToastContainer } from "react-toastify";
 
 const Home = () => {
   const [isTimerStarted, setIsTimerStarted] = useState(false);
@@ -16,6 +17,7 @@ const Home = () => {
   const [hoursRemaining, setHoursRemaining] = useState(0);
   const [minutesRemaining, setMinutesRemaining] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
+  const [timeWhenTimerStarted, setTimeWhenTimerStarted] = useState(null);
 
   return (
     <>
@@ -37,7 +39,9 @@ const Home = () => {
             minutesRemaining,
             setMinutesRemaining,
             secondsRemaining,
-            setSecondsRemaining
+            setSecondsRemaining,
+            timeWhenTimerStarted,
+            setTimeWhenTimerStarted,
           }}
         >
           <nav
@@ -58,6 +62,18 @@ const Home = () => {
           <DateTimePicker />
           <Timer />
         </TimerContext.Provider>
+        <ToastContainer
+          autoClose={3500}
+          hideProgressBar={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          newestOnTop
+          limit={5}
+          pauseOnHover
+          theme="dark"
+        />
       </div>
     </>
   );

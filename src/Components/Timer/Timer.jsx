@@ -9,8 +9,10 @@ import {
 import React from "react";
 import { useContext, useState } from "react";
 import TimerContext from "../Contexts/TimerContext";
-import { ToastContainer, toast, cssTransition } from "react-toastify";
+import { toast, cssTransition } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TimerStartInfo from "../DateTimeInfo/TimerStartInfo";
+import TimerEndInfo from "../DateTimeInfo/TimerEndInfo";
 
 const Timer = () => {
   const {
@@ -29,8 +31,6 @@ const Timer = () => {
     secondsRemaining,
     setSecondsRemaining,
   } = useContext(TimerContext);
-
-  const [totalDays, setTotalDays] = useState(null);
 
   const bounce = cssTransition({
     enter: "animate__animated animate__bounceIn",
@@ -123,11 +123,15 @@ const Timer = () => {
               notifyInvalidDateInput();
               setIsTimerStarted(false);
             } else {
-              setTotalDays(daysLeft);
               setDaysRemaining(daysLeft);
               setHoursRemaining(hoursLeft);
               setMinutesRemaining(minutesLeft);
               setSecondsRemaining(secondsLeft);
+              toast.success("The countdown has started."),
+                {
+                  position: "top-center",
+                  transition: successTransition,
+                };
             }
           }
         }
@@ -185,149 +189,58 @@ const Timer = () => {
     isTimerCancelled,
   ]);
 
-  const progressDaysValue = (daysRemaining / totalDays) * 100;
-  const progressHoursValue = (hoursRemaining / 24) * 100;
-  const progressMinutesValue = (minutesRemaining / 60) * 100;
-  const progressSecondsValue = (secondsRemaining / 60) * 100;
+  if (secondsRemaining !== 0 && String(secondsRemaining).length < 2) {
+    const seconds = String(secondsRemaining).split("").unshift(0).join("");
+    setSecondsRemaining(seconds);
+  }
+
+  const remainingTimeDataArray = [
+    { elementName: "Day(s)", elementValue: daysRemaining, color: "green" },
+    { elementName: "Hour(s)", elementValue: hoursRemaining, color: "blue" },
+    {
+      elementName: "Minute(s)",
+      elementValue: minutesRemaining,
+      color: "#f31260",
+    },
+    {
+      elementName: "Second(s)",
+      elementValue: secondsRemaining,
+      color: "#0D9488",
+    },
+  ];
 
   return (
     <>
-      <div className="mx-auto flex justify-center items-center flex-wrap gap-4">
-        <Card className="bg-inherit shadow-none border-0">
-          <CardBody className="justify-center items-center pb-0">
-            <div className="relative">
-              <CircularProgress
-                aria-label="Day(s)"
-                classNames={{
-                  svg: "w-36 h-36 drop-shadow-md",
-                  indicator: "stroke-danger",
-                  track: "stroke-white",
-                }}
-                value={progressDaysValue}
-                showValueLabel={false}
-              />
-              <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {daysRemaining}
-              </h6>
-            </div>
-          </CardBody>
-          <CardFooter className="justify-center items-center pt-0">
-            <Chip
-              classNames={{
-                base: "ring-1 bg-danger p-4 py-5 ring-[yellow]",
-                content: "text-danger text-base text-white font-medium",
-              }}
-              variant="bordered"
+      {isTimerStarted ? <TimerStartInfo /> : ""}
+      <div className="mx-auto flex justify-center items-center flex-wrap gap-10">
+        {remainingTimeDataArray.map((remainingTimeData) => {
+          return (
+            <Card
+              key={remainingTimeData.elementName}
+              className={`bg-inherit shadow-none h-48 w-44 py-2 px-2`}
             >
-              Day(s)
-            </Chip>
-          </CardFooter>
-        </Card>
-        <strong className="text-3xl font-bold -mt-5">{`->`}</strong>
-        <Card className="bg-inherit shadow-none border-0">
-          <CardBody className="justify-center items-center pb-0">
-            <div className="relative">
-              <CircularProgress
-                aria-label="Second(s)"
-                classNames={{
-                  svg: "w-36 h-36 drop-shadow-md",
-                  indicator: "stroke-danger",
-                  track: "stroke-white",
-                }}
-                value={progressHoursValue}
-                showValueLabel={false}
-              />
-              <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {hoursRemaining}
-              </h6>
-            </div>
-          </CardBody>
-          <CardFooter className="justify-center items-center pt-0">
-            <Chip
-              classNames={{
-                base: "ring-1 bg-danger p-4 py-5 ring-[yellow]",
-                content: "text-danger text-base text-white font-medium",
-              }}
-              variant="bordered"
-            >
-              Hour(s)
-            </Chip>
-          </CardFooter>
-        </Card>
-        <strong className="text-3xl font-bold -mt-5">{`->`}</strong>
-        <Card className="bg-inherit shadow-none border-0">
-          <CardBody className="justify-center items-center pb-0">
-            <div className="relative">
-              <CircularProgress
-                aria-label="Second(s)"
-                classNames={{
-                  svg: "w-36 h-36 drop-shadow-md",
-                  indicator: "stroke-danger",
-                  track: "stroke-white",
-                }}
-                value={progressMinutesValue}
-                showValueLabel={false}
-              />
-              <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {minutesRemaining}
-              </h6>
-            </div>
-          </CardBody>
-          <CardFooter className="justify-center items-center pt-0">
-            <Chip
-              classNames={{
-                base: "ring-1 bg-danger p-4 py-5 ring-[yellow]",
-                content: "text-danger text-base text-white font-medium",
-              }}
-              variant="bordered"
-            >
-              Minute(s)
-            </Chip>
-          </CardFooter>
-        </Card>
-        <strong className="text-3xl font-bold -mt-5">{`->`}</strong>
-        <Card className="bg-inherit shadow-none border-0">
-          <CardBody className="justify-center items-center pb-0">
-            <div className="relative">
-              <CircularProgress
-                aria-label="Second(s)"
-                classNames={{
-                  svg: "w-36 h-36 drop-shadow-md",
-                  indicator: "stroke-danger",
-                  track: "stroke-white",
-                }}
-                value={progressSecondsValue}
-                showValueLabel={false}
-              />
-              <h6 className="text-3xl font-semibold text-danger absolute top-[50%] left-[50%] translate-y-[-50%] translate-x-[-50%] z-40">
-                {secondsRemaining}
-              </h6>
-            </div>
-          </CardBody>
-          <CardFooter className="justify-center items-center pt-0">
-            <Chip
-              classNames={{
-                base: "ring-1 bg-danger p-4 py-5 ring-[yellow]",
-                content: "text-danger text-base text-white font-medium",
-              }}
-              variant="bordered"
-            >
-              Second(s)
-            </Chip>
-          </CardFooter>
-        </Card>
-        <ToastContainer
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="dark"
-        />
+              <CardBody className="text-center flex items-center justify-center">
+                <h2
+                  className={`text-6xl text-[${remainingTimeData.color}] font-medium`}
+                >
+                  {remainingTimeData.elementValue}
+                </h2>
+              </CardBody>
+              <CardFooter className="flex items-center justify-center">
+                <Chip
+                  classNames={{
+                    base: "p-4 border-0 ring-0 py-5 bg-white",
+                    content: `text-[${remainingTimeData.color}] text-base font-medium`,
+                  }}
+                >
+                  {remainingTimeData.elementName}
+                </Chip>
+              </CardFooter>
+            </Card>
+          );
+        })}
       </div>
+      {isTimerStarted ? <TimerEndInfo /> : ""}
     </>
   );
 };

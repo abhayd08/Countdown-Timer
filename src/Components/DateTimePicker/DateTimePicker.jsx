@@ -1,8 +1,8 @@
 import styles from "./DateTimePicker.module.css";
-import { Input } from "@nextui-org/react";
 import { Button } from "@nextui-org/react";
 import { useContext } from "react";
 import TimerContext from "../Contexts/TimerContext";
+import { toast, cssTransition } from "react-toastify";
 
 const DateTimePicker = () => {
   const {
@@ -20,11 +20,24 @@ const DateTimePicker = () => {
     setMinutesRemaining,
     secondsRemaining,
     setSecondsRemaining,
+    timeWhenTimerStarted,
+    setTimeWhenTimerStarted,
   } = useContext(TimerContext);
+
+  const bounce = cssTransition({
+    enter: "animate__animated animate__bounceIn",
+    exit: "animate__animated animate__bounceOut",
+  });
 
   return (
     <form
-      onSubmit={(e) => e.preventDefault()}
+      onSubmit={(e) => {
+        e.preventDefault();
+        setIsTimerStarted(true);
+        setTimeDifferenceInMilliseconds(new Date(targetDateTime) - Date.now());
+        setTimeWhenTimerStarted(new Date());
+        setIsTimerCancelled(false);
+      }}
       className={`text-xl flex justify-center items-center flex-wrap gap-2 ${styles.form}`}
     >
       <div className="relative">
@@ -42,30 +55,26 @@ const DateTimePicker = () => {
       {!isTimerStarted ? (
         <Button
           type="submit"
-          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-36 font-semibold"
-          color="danger"
-          onClick={() => {
-            setIsTimerStarted(true);
-            setTimeDifferenceInMilliseconds(
-              new Date(targetDateTime) - Date.now()
-            );
-            setIsTimerCancelled(false);
-          }}
+          className="tracking-wide text-white h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-36 font-semibold"
+          color="success"
         >
           Start Timer
         </Button>
       ) : (
-        <Button
-          type="submit"
+        <div
           onClick={() => {
             setIsTimerCancelled(true);
             setIsTimerStarted(false);
+            toast.warn("The countdown has been cancelled."),
+              {
+                position: "top-right",
+                transition: bounce,
+              };
           }}
-          className="tracking-wide h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-36 font-semibold"
-          color="danger"
+          className="tracking-wide h-[2.65rem] bg-danger flex justify-center items-center cursor-pointer text-white rounded-lg data-[hover]:opacity-100 active:scale-[0.96] transition-all hover:bg-[darkred] hover:text-white text-base w-36 font-semibold"
         >
           Cancel Timer
-        </Button>
+        </div>
       )}
     </form>
   );
