@@ -22,7 +22,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="py-8 flex flex-col gap-y-unit-20 px-2 min-h-[100vh] bg-gradient-to-b from-[#f31260] to-[white]">
+      <div className="py-8 flex flex-col gap-y-14 px-2 min-h-[100vh] bg-gradient-to-b from-[#f31260] to-[white]">
         <TimerContext.Provider
           value={{
             isTimerStarted,
@@ -56,7 +56,8 @@ const Home = () => {
             </h1>
             <lord-icon
               src="https://cdn.lordicon.com/lzgqzxrq.json"
-              trigger="loop"
+              id="clock"
+              // trigger="loop"
               state="loop-oscillate"
               colors="primary:black,secondary:white,tertiary:black,quaternary:#f31260"
               style={{ width: "140px", height: "140px" }}

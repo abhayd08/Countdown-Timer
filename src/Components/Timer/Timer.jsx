@@ -26,7 +26,7 @@ const Timer = () => {
     setIsTimerStartBtnClicked,
   } = useContext(TimerContext);
 
-  const [audio] = useState(new Audio(successSound))
+  const [audio] = useState(new Audio(successSound));
 
   const { isHidden } = usePageVisibility();
   const timerRef = useRef(null);
@@ -72,11 +72,10 @@ const Timer = () => {
   };
 
   const notifySuccess = () => {
-    toast.success("The countdown is over. What's next on your adventure?"),
-      {
-        position: "top-right",
-        transition: successTransition,
-      };
+    toast.success("The countdown is over. What's next on your adventure?", {
+      transition: successTransition,
+      position: "top-right",
+    });
   };
 
   const startTime = performance.now();
@@ -103,6 +102,7 @@ const Timer = () => {
           transition: successTransition,
           position: "top-right",
         });
+        document.getElementById("clock").setAttribute("trigger", "loop");
       }, 1000);
 
       return () => {
@@ -113,6 +113,7 @@ const Timer = () => {
 
     if (isTimerCancelled) {
       clearInterval(timerRef.current);
+      document.getElementById("clock").removeAttribute("trigger");
       setDaysRemaining(0);
       setHoursRemaining(0);
       setMinutesRemaining(0);
@@ -200,10 +201,11 @@ const Timer = () => {
   const updateTimerValues = (remainingTime) => {
     if (remainingTime <= 0) {
       notifySuccess();
-      audio.play()
+      audio.play();
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       clearInterval(timerRef.current);
+      document.getElementById("clock").removeAttribute("trigger");
       return;
     }
 
@@ -240,8 +242,8 @@ const Timer = () => {
 
   return (
     <>
-      {isTimerStarted ? <TimerStartInfo /> : ""}
-      <div className="mx-auto flex justify-center items-center flex-wrap gap-10 transition-all animate__animated animate__backInLeft">
+       <TimerStartInfo /> 
+      <div className="mx-auto flex justify-center items-center flex-wrap gap-10 transition-all animate__animated animate__pulse">
         {remainingTimeDataArray.map((remainingTimeData) => {
           return (
             <Card

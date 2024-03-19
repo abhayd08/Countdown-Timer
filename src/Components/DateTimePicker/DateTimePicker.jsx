@@ -41,7 +41,7 @@ const DateTimePicker = () => {
 
         return () => clearTimeout(timerId);
       }}
-      className={`text-xl flex  animate__animated animate__backInRight justify-center items-center flex-wrap gap-2 ${styles.form}`}
+      className={`text-xl flex  animate__animated animate__pulse justify-center items-center flex-wrap gap-2 ${styles.form}`}
     >
       <div className="relative">
         <input
