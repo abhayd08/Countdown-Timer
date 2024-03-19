@@ -115,16 +115,16 @@ const Timer = () => {
         clearTimeout(successTimer);
       };
     }
-    
+
     if (isTimerCancelled) {
       setUpdateAnimation(false);
       clearInterval(timerRef.current);
       document.getElementById("clock").removeAttribute("trigger");
-      setDaysRemaining(0);
-      setHoursRemaining(0);
-      setMinutesRemaining(0);
-      setSecondsRemaining(0);
       const timer = setTimeout(() => {
+        setDaysRemaining(0);
+        setHoursRemaining(0);
+        setMinutesRemaining(0);
+        setSecondsRemaining(0);
         setUpdateAnimation(true);
       }, 1000);
 
@@ -262,7 +262,7 @@ const Timer = () => {
   return (
     <>
       <TimerStartInfo />
-      <div className="mx-auto flex justify-center items-center flex-wrap gap-10 transition-all animate__animated animate__pulse">
+      <div className="mx-auto grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 transition-all animate__animated animate__pulse">
         {remainingTimeDataArray.map((remainingTimeData) => {
           return (
             <Card
