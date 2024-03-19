@@ -24,3 +24,9 @@ body {
 * {
   margin: 0;
 }
+
+@media (max-width: 270px) {
+  body {
+    display: flex;
+  }
+}

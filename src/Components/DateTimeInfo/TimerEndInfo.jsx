@@ -12,7 +12,7 @@ const TimerEndInfo = () => {
   });
 
   return (
-    <div className="px-2 flex flex-col items-end  animate__animated animate__backInRight">
+    <div className="px-2 flex -mb-8 flex-col items-end  animate__animated animate__backInRight">
       <h3 className="text-xl">Timer ends on </h3>
       <strong className="text-xl font-semibold text-teal-700">
         {targetDate}

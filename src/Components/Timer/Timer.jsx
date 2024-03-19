@@ -242,7 +242,7 @@ const Timer = () => {
 
   return (
     <>
-       <TimerStartInfo /> 
+      <TimerStartInfo />
       <div className="mx-auto flex justify-center items-center flex-wrap gap-10 transition-all animate__animated animate__pulse">
         {remainingTimeDataArray.map((remainingTimeData) => {
           return (
@@ -252,16 +252,18 @@ const Timer = () => {
             >
               <CardBody className="text-center flex items-center justify-center">
                 <h2
-                  className={`text-6xl text-[${remainingTimeData.color}] font-medium`}
+                  className={`text-6xl font-medium`}
+                  style={{ color: remainingTimeData.color }}
                 >
                   {remainingTimeData.elementValue}
                 </h2>
               </CardBody>
               <CardFooter className="flex items-center justify-center">
                 <Chip
+                  style={{ color: remainingTimeData.color }}
                   classNames={{
                     base: "p-4 border-0 ring-0 py-5 bg-white",
-                    content: `text-[${remainingTimeData.color}] text-base font-medium`,
+                    content: "text-base font-medium",
                   }}
                 >
                   {remainingTimeData.elementName}
