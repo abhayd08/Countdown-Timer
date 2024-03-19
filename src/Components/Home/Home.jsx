@@ -22,7 +22,7 @@ const Home = () => {
 
   return (
     <>
-      <div className="py-8 flex flex-col gap-y-14 px-2 min-h-[100vh] bg-gradient-to-b from-[#f31260] to-[white]">
+      <div className="py-4 flex flex-col gap-y-14 px-2 min-h-[100vh] bg-gradient-to-b from-[#f31260] to-[white]">
         <TimerContext.Provider
           value={{
             isTimerStarted,
@@ -67,10 +67,10 @@ const Home = () => {
           <Timer />
         </TimerContext.Provider>
         <ToastContainer
-          autoClose={3500}
+          autoClose={3000}
           closeOnClick
           draggable
-          limit={5}
+          limit={3}
           pauseOnHover
           theme="dark"
         />

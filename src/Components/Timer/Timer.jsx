@@ -7,6 +7,7 @@ import TimerStartInfo from "../DateTimeInfo/TimerStartInfo";
 import TimerEndInfo from "../DateTimeInfo/TimerEndInfo";
 import { usePageVisibility } from "react-page-visibility";
 import successSound from "/assets/success.mp3";
+import { motion } from "framer-motion";
 
 const Timer = () => {
   const {
@@ -83,12 +84,15 @@ const Timer = () => {
   const elapsed = currentTime - startTime;
   const remainingTime = timeDifferenceInMilliseconds - elapsed;
 
+  const [updateAnimation, setUpdateAnimation] = useState(true);
+
   useEffect(() => {
     if (
       isTimerStartBtnClicked &&
       !isHidden &&
       handleSubmissionError(remainingTime)
     ) {
+      setUpdateAnimation(false);
       const startTime = performance.now();
       timerRef.current = setInterval(() => {
         const currentTime = performance.now();
@@ -102,6 +106,7 @@ const Timer = () => {
           transition: successTransition,
           position: "top-right",
         });
+        setUpdateAnimation(true);
         document.getElementById("clock").setAttribute("trigger", "loop");
       }, 1000);
 
@@ -110,14 +115,22 @@ const Timer = () => {
         clearTimeout(successTimer);
       };
     }
-
+    
     if (isTimerCancelled) {
+      setUpdateAnimation(false);
       clearInterval(timerRef.current);
       document.getElementById("clock").removeAttribute("trigger");
       setDaysRemaining(0);
       setHoursRemaining(0);
       setMinutesRemaining(0);
       setSecondsRemaining(0);
+      const timer = setTimeout(() => {
+        setUpdateAnimation(true);
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+      };
     }
   }, [isTimerStartBtnClicked, isHidden, isTimerCancelled]);
 
@@ -202,27 +215,33 @@ const Timer = () => {
     if (remainingTime <= 0) {
       notifySuccess();
       audio.play();
+      setUpdateAnimation(false);
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       clearInterval(timerRef.current);
       document.getElementById("clock").removeAttribute("trigger");
-      return;
+      const timer = setTimeout(() => {
+        setUpdateAnimation(true);
+      }, 1000);
+      return () => {
+        clearTimeout(timer);
+      };
+    } else {
+      const daysLeft = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+      const hoursLeft = Math.floor(
+        (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
+      const minutesLeft = Math.floor(
+        (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      const secondsLeft = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+      setDaysRemaining(daysLeft);
+      setHoursRemaining(hoursLeft);
+      setMinutesRemaining(minutesLeft);
+      setSecondsRemaining(secondsLeft);
+      setIsTimerStarted(true);
     }
-
-    const daysLeft = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-    const hoursLeft = Math.floor(
-      (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-    );
-    const minutesLeft = Math.floor(
-      (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
-    );
-    const secondsLeft = Math.floor((remainingTime % (1000 * 60)) / 1000);
-
-    setDaysRemaining(daysLeft);
-    setHoursRemaining(hoursLeft);
-    setMinutesRemaining(minutesLeft);
-    setSecondsRemaining(secondsLeft);
-    setIsTimerStarted(true);
   };
 
   const remainingTimeDataArray = [
@@ -251,12 +270,19 @@ const Timer = () => {
               className={`bg-inherit shadow-none h-48 w-44 py-2 px-2`}
             >
               <CardBody className="text-center flex items-center justify-center">
-                <h2
+                <motion.h2
+                  initial={{ opacity: 0 }}
+                  animate={
+                    updateAnimation
+                      ? { opacity: 1, rotateY: 0 }
+                      : { rotateY: 90 }
+                  }
+                  transition={{ duration: 0.7, delay: 0.05 }}
                   className={`text-6xl font-medium`}
                   style={{ color: remainingTimeData.color }}
                 >
                   {remainingTimeData.elementValue}
-                </h2>
+                </motion.h2>
               </CardBody>
               <CardFooter className="flex items-center justify-center">
                 <Chip
