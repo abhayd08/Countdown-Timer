@@ -67,12 +67,8 @@ const Home = () => {
         </TimerContext.Provider>
         <ToastContainer
           autoClose={3500}
-          hideProgressBar={false}
           closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
           draggable
-          newestOnTop
           limit={5}
           pauseOnHover
           theme="dark"

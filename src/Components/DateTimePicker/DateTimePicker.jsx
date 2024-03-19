@@ -28,9 +28,11 @@ const DateTimePicker = () => {
     <form
       onSubmit={(e) => {
         e.preventDefault();
+        document.getElementById("submitBtn").setAttribute("disabled", true);
         setStartBtnContent(<Spinner color="danger" />);
         const timerId = setTimeout(() => {
           setStartBtnContent("Start Timer");
+          document.getElementById("submitBtn").removeAttribute("disabled");
         }, 1000);
         setIsTimerStartBtnClicked(true);
         setTimeDifferenceInMilliseconds(new Date(targetDateTime) - Date.now());
@@ -56,6 +58,7 @@ const DateTimePicker = () => {
       {!isTimerStarted ? (
         <Button
           type="submit"
+          id="submitBtn"
           className="tracking-wide text-white h-[2.65rem] rounded-lg data-[hover]:opacity-100 hover:bg-[yellow] hover:text-danger transition-colors text-base w-36 font-semibold"
           color="success"
         >

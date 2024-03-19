@@ -6,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import TimerStartInfo from "../DateTimeInfo/TimerStartInfo";
 import TimerEndInfo from "../DateTimeInfo/TimerEndInfo";
 import { usePageVisibility } from "react-page-visibility";
+import successSound from "/assets/success.mp3";
 
 const Timer = () => {
   const {
@@ -24,6 +25,8 @@ const Timer = () => {
     isTimerStartBtnClicked,
     setIsTimerStartBtnClicked,
   } = useContext(TimerContext);
+
+  const [audio] = useState(new Audio(successSound))
 
   const { isHidden } = usePageVisibility();
   const timerRef = useRef(null);
@@ -71,28 +74,40 @@ const Timer = () => {
   const notifySuccess = () => {
     toast.success("The countdown is over. What's next on your adventure?"),
       {
-        position: "top-center",
+        position: "top-right",
         transition: successTransition,
       };
   };
 
+  const startTime = performance.now();
+  const currentTime = performance.now();
+  const elapsed = currentTime - startTime;
+  const remainingTime = timeDifferenceInMilliseconds - elapsed;
+
   useEffect(() => {
-    if (isTimerStartBtnClicked && !isHidden) {
+    if (
+      isTimerStartBtnClicked &&
+      !isHidden &&
+      handleSubmissionError(remainingTime)
+    ) {
       const startTime = performance.now();
       timerRef.current = setInterval(() => {
         const currentTime = performance.now();
         const elapsed = currentTime - startTime;
         const remainingTime = timeDifferenceInMilliseconds - elapsed;
-        if (remainingTime === 0) {
-          clearInterval(timerRef.current);
-          setIsTimerStarted(false);
-          notifySuccess();
-        } else {
-          updateTimerValues(remainingTime);
-        }
+        updateTimerValues(remainingTime);
       }, 1000);
+
+      const successTimer = setTimeout(() => {
+        toast.success("The coundown has started!", {
+          transition: successTransition,
+          position: "top-right",
+        });
+      }, 1000);
+
       return () => {
         clearInterval(timerRef.current);
+        clearTimeout(successTimer);
       };
     }
 
@@ -103,79 +118,109 @@ const Timer = () => {
       setMinutesRemaining(0);
       setSecondsRemaining(0);
     }
-  }, [isTimerStartBtnClicked, isHidden]);
+  }, [isTimerStartBtnClicked, isHidden, isTimerCancelled]);
 
-  const updateTimerValues = (remainingTime) => {
+  const handleSubmissionError = (remainingTime) => {
     const daysLeft = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
-    if (daysLeft > 99) {
-      notifyError("days");
-      setIsTimerStartBtnClicked(false);
-      setIsTimerStarted(false);
-      setIntervalTime(0);
-      return;
-    } else if (daysLeft < 0) {
-      notifyInvalidDateInput();
-      setIsTimerStartBtnClicked(false);
-      setIsTimerStarted(false);
-      setIntervalTime(0);
-      return;
-    }
-
     const hoursLeft = Math.floor(
       (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
     );
-    if (hoursLeft > 23) {
-      notifyError("hours");
-      setIsTimerStartBtnClicked(false);
-      setIsTimerStarted(false);
-      setIntervalTime(0);
-      return;
-    } else if (hoursLeft < 0) {
-      notifyInvalidDateInput();
-      setIsTimerStartBtnClicked(false);
-      setIsTimerStarted(false);
-      setIntervalTime(0);
-      return;
-    }
-
     const minutesLeft = Math.floor(
       (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
     );
+    const secondsLeft = Math.floor((remainingTime % (1000 * 60)) / 1000);
+
+    if (daysLeft > 99) {
+      setTimeout(() => {
+        notifyError("days");
+      }, 1000);
+      setIsTimerStartBtnClicked(false);
+      setIsTimerStarted(false);
+      return false;
+    } else if (daysLeft < 0) {
+      setTimeout(() => {
+        notifyInvalidDateInput();
+      }, 1000);
+      setIsTimerStartBtnClicked(false);
+      setIsTimerStarted(false);
+      return false;
+    }
+
+    if (hoursLeft > 23) {
+      setTimeout(() => {
+        notifyError("hours");
+      }, 1000);
+      setIsTimerStartBtnClicked(false);
+      setIsTimerStarted(false);
+      return false;
+    } else if (hoursLeft < 0) {
+      setTimeout(() => {
+        notifyInvalidDateInput();
+      }, 1000);
+      setIsTimerStartBtnClicked(false);
+      setIsTimerStarted(false);
+      return false;
+    }
+
     if (minutesLeft > 59) {
-      notifyError("minutes");
+      setTimeout(() => {
+        notifyError("minutes");
+      }, 1000);
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
-      setIntervalTime(0);
-      return;
+      return false;
     } else if (minutesLeft < 0) {
-      notifyInvalidDateInput();
+      setTimeout(() => {
+        notifyInvalidDateInput();
+      }, 1000);
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
-      setIntervalTime(0);
+      return false;
+    }
+
+    if (secondsLeft > 59) {
+      setTimeout(() => {
+        notifyError("seconds");
+      }, 1000);
+      setIsTimerStartBtnClicked(false);
+      setIsTimerStarted(false);
+      return false;
+    } else if (secondsLeft < 0) {
+      setTimeout(() => {
+        notifyInvalidDateInput();
+      }, 1000);
+      setIsTimerStartBtnClicked(false);
+      setIsTimerStarted(false);
+      return false;
+    }
+
+    return true;
+  };
+
+  const updateTimerValues = (remainingTime) => {
+    if (remainingTime <= 0) {
+      notifySuccess();
+      audio.play()
+      setIsTimerStartBtnClicked(false);
+      setIsTimerStarted(false);
+      clearInterval(timerRef.current);
       return;
     }
 
+    const daysLeft = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
+    const hoursLeft = Math.floor(
+      (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
+    const minutesLeft = Math.floor(
+      (remainingTime % (1000 * 60 * 60)) / (1000 * 60)
+    );
     const secondsLeft = Math.floor((remainingTime % (1000 * 60)) / 1000);
-    if (secondsLeft > 59) {
-      notifyError("seconds");
-      setIsTimerStartBtnClicked(false);
-      setIsTimerStarted(false);
-      setIntervalTime(0);
-      return;
-    } else if (secondsLeft < 0) {
-      notifyInvalidDateInput();
-      setIsTimerStartBtnClicked(false);
-      setIsTimerStarted(false);
-      setIntervalTime(0);
-      return;
-    }
 
     setDaysRemaining(daysLeft);
     setHoursRemaining(hoursLeft);
     setMinutesRemaining(minutesLeft);
     setSecondsRemaining(secondsLeft);
     setIsTimerStarted(true);
-    console.log(intervalTime);
   };
 
   const remainingTimeDataArray = [
