@@ -30,14 +30,14 @@ const DateTimePicker = () => {
         e.preventDefault();
         document.getElementById("submitBtn").setAttribute("disabled", true);
         setStartBtnContent(<Spinner color="danger" />);
-        const timerId = setTimeout(() => {
-          setStartBtnContent("Start Timer");
-          document.getElementById("submitBtn").removeAttribute("disabled");
-        }, 1000);
         setIsTimerStartBtnClicked(true);
         setTimeDifferenceInMilliseconds(new Date(targetDateTime) - Date.now());
         setTimeWhenTimerStarted(new Date());
         setIsTimerCancelled(false);
+        const timerId = setTimeout(() => {
+          setStartBtnContent("Start Timer");
+          document.getElementById("submitBtn").removeAttribute("disabled");
+        }, 1000);
 
         return () => clearTimeout(timerId);
       }}

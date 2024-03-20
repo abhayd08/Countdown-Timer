@@ -11,14 +11,13 @@ A web application that allows users to input a specific date and time, after whi
 - Real-time countdown display.
 - Ability to cancel and create a new countdown at any time.
 - Responsive design for various screen sizes.
-- Sound notification for when the countdown is complete.
-- Persist countdown even if the browser tab is reopened again.
+- Sound notification when the countdown is complete.
 
 ###
 
 ## Technologies
 
-#### Frontend: HTML, CSS, JavaScript, React, Tailwind CSS
+#### Frontend: HTML, CSS, JavaScript, React, Tailwind CSS, Framer Motion, Next UI, Animate.css
 
 #
 

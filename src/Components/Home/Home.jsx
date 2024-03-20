@@ -2,7 +2,7 @@ import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import Timer from "../Timer/Timer";
 import styles from "./Home.module.css";
 import TimerContext from "../Contexts/TimerContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "animate.css";
 import { ToastContainer } from "react-toastify";
 
@@ -12,17 +12,24 @@ const Home = () => {
   const [timeDifferenceInMilliseconds, setTimeDifferenceInMilliseconds] =
     useState(null);
   const [isTimerCancelled, setIsTimerCancelled] = useState(null);
-
   const [daysRemaining, setDaysRemaining] = useState(0);
   const [hoursRemaining, setHoursRemaining] = useState(0);
   const [minutesRemaining, setMinutesRemaining] = useState(0);
   const [secondsRemaining, setSecondsRemaining] = useState(0);
   const [timeWhenTimerStarted, setTimeWhenTimerStarted] = useState(null);
-  const [isTimerStartBtnClicked, setIsTimerStartBtnClicked] = useState(null);
+  const [isTimerStartBtnClicked, setIsTimerStartBtnClicked] = useState(false);
+
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      setScreenWidth(window.innerWidth);
+    });
+  });
 
   return (
     <>
-      <div className="py-4 flex flex-col gap-y-14 px-2 min-h-[100vh] bg-gradient-to-b from-[#f31260] to-[white]">
+      <div className="py-4 flex flex-col gap-y-14 px-2 bg-gradient-to-b from-[#f31260] to-[white]">
         <TimerContext.Provider
           value={{
             isTimerStarted,
@@ -73,6 +80,7 @@ const Home = () => {
           limit={3}
           pauseOnHover
           theme="dark"
+          style={{ width: screenWidth <= 270 ? "100%" : "" }}
         />
       </div>
     </>

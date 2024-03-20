@@ -135,6 +135,8 @@ const Timer = () => {
   }, [isTimerStartBtnClicked, isHidden, isTimerCancelled]);
 
   const handleSubmissionError = (remainingTime) => {
+    const timeouts = [];
+
     const daysLeft = Math.floor(remainingTime / (1000 * 60 * 60 * 24));
     const hoursLeft = Math.floor(
       (remainingTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
@@ -145,68 +147,86 @@ const Timer = () => {
     const secondsLeft = Math.floor((remainingTime % (1000 * 60)) / 1000);
 
     if (daysLeft > 99) {
-      setTimeout(() => {
-        notifyError("days");
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyError("days");
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     } else if (daysLeft < 0) {
-      setTimeout(() => {
-        notifyInvalidDateInput();
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyInvalidDateInput();
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     }
 
     if (hoursLeft > 23) {
-      setTimeout(() => {
-        notifyError("hours");
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyError("hours");
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     } else if (hoursLeft < 0) {
-      setTimeout(() => {
-        notifyInvalidDateInput();
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyInvalidDateInput();
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     }
 
     if (minutesLeft > 59) {
-      setTimeout(() => {
-        notifyError("minutes");
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyError("minutes");
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     } else if (minutesLeft < 0) {
-      setTimeout(() => {
-        notifyInvalidDateInput();
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyInvalidDateInput();
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     }
 
     if (secondsLeft > 59) {
-      setTimeout(() => {
-        notifyError("seconds");
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyError("seconds");
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     } else if (secondsLeft < 0) {
-      setTimeout(() => {
-        notifyInvalidDateInput();
-      }, 1000);
+      timeouts.push(
+        setTimeout(() => {
+          notifyInvalidDateInput();
+        }, 1000)
+      );
       setIsTimerStartBtnClicked(false);
       setIsTimerStarted(false);
       return false;
     }
+
+    timeouts.forEach((timeout) => clearTimeout(timeout));
 
     return true;
   };

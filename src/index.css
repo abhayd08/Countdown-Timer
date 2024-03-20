@@ -29,4 +29,9 @@ body {
   body {
     display: flex;
   }
+
+  #datetime-picker {
+    width: 15rem !important;
+    max-width: 100% !important
+  }
 }
