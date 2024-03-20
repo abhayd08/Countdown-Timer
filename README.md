@@ -23,7 +23,7 @@ A web application that allows users to input a specific date and time, after whi
 
 ## Getting Started
 
-#### Welcome to this web app with React + Vite starter template! This template offers a streamlined setup for developing React applications using Vite, complete with Hot Module Replacement (HMR) and ESLint rules for code quality.
+#### Welcome to this web app with React + Vite starter template! This template offers a streamlined setup for developing React applications using Vite.
 ## Installation
 
 #### 1. Clone the Repository:
@@ -48,3 +48,5 @@ A web application that allows users to input a specific date and time, after whi
 #
 
 This project is based on React and utilizes Vite for fast development and bundling. Happy coding! 🚀
+
+#### Deployed Link - https://countdown-timer-abhay.vercel.app/
